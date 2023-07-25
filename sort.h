@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 
+void print_array(int *arr, size_t sz);
 void bubble_sort(int *array, size_t size);
 
 #endif
