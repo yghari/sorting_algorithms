@@ -24,22 +24,22 @@ void swaping(int *a, int *b)
  */
 int partition(int *array, int low, int high)
 {
-		int pivot = array[high];
-		int i = low - 1;
-		int j;
+	int pivot = array[high];
+	int i = low - 1;
+	int j;
 
-		for (j = low; j <= high - 1; j++)
+	for (j = low; j <= high - 1; j++)
+	{
+		if (array[j] < pivot)
 		{
-			if (array[j] < pivot)
-			{
-				i++;
-				swaping(&array[i], &array[j]);
-				print_array(array, high + 1);
-			}
+			i++;
+			swaping(&array[i], &array[j]);
+			print_array(array, high + 1);
 		}
-		swaping(&array[i + 1], &array[high]);
-		print_array(array, high + 1);
-		return (i + 1);
+	}
+	swaping(&array[i + 1], &array[high]);
+	print_array(array, high + 1);
+	return (i + 1);
 }
 
 /**
@@ -61,7 +61,8 @@ void quicksort(int *array, int low, int high)
 }
 
 /**
- * quick_sort - Sort an array of integers in ascending order using
+ * quick_sort - Sort an array of integers in ascending order
+ * using the Quick sort algorithm
  * @array: Pointer to the array
  * @size: Size of the array
  */
@@ -69,5 +70,6 @@ void quick_sort(int *array, size_t size)
 {
 	if (array == NULL || size < 2)
 		return;
+
 	quicksort(array, 0, size - 1);
 }
