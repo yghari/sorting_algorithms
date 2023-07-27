@@ -30,6 +30,7 @@ void swap_left_right(listint_t **list, listint_t *head, listint_t *node)
 void swap_right_left(listint_t **list, listint_t *head, listint_t *node)
 {
 	listint_t *aux;
+	(void)*node;
 
 	aux = head->prev;
 	aux->next->prev = aux->prev;
