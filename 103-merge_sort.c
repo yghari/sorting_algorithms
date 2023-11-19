@@ -1,90 +1,81 @@
 #include "sort.h"
+#include <stdio.h>
 /**
- * _calloc - allocates memory for an array using calloc
- * @nmemb: number of elements
- * @size: size of each element
- *
- * Return: pointer to the allocated memory, or NULL if nmemb or size is 0
+ *_calloc - this is a calloc function
+ *@nmemb: number of elemets
+ *@size: bit size of each element
+ *Return: pointer to memory assignement
  */
 void *_calloc(unsigned int nmemb, unsigned int size)
 {
 	unsigned int i = 0;
-	char *ptr;
+	char *p;
 
 	if (nmemb == 0 || size == 0)
-		return (NULL);
-
-	ptr = malloc(nmemb * size);
-	if (ptr == NULL)
-		return (NULL);
-
+		return ('\0');
+	p = malloc(nmemb * size);
+	if (p == '\0')
+		return ('\0');
 	for (i = 0; i < (nmemb * size); i++)
-		ptr[i] = 0;
-
-	return (ptr);
+		p[i] = '\0';
+	return (p);
 }
-
 /**
- * merge - merges two subarrays of arr[]
- * @arr: array to be sorted
- * @tmp: temporary array used in merge to optimize reducing system calls
- * @start: starting index of left subarray
- * @mid: ending index of left subarray and starting index of right subarray
- * @end: ending index of right subarray
- *
- * Description: This function merges two subarrays of arr[], the left and right
- * subarrays, both of which are sorted in ascending order.
- */
+ *merge - make a merge
+ *@arr: one from start to mid
+ *@tmp: temp array used in merge, was created outside to
+ *optimize reducing the system calls
+ *@start: first element position
+ *@mid: array middle
+ *@end: last element position
+ **/
 void merge(int *arr, int *tmp, int start, int mid, int end)
 {
-	int left_size = mid - start + 1, right_size = end - mid;
-	int *left_arr, *right_arr;
-	int left_index, right_index, i = 0;
+	/*  sizes and temp arrays */
+	int size_left = mid - start + 1, size_right = end - mid;
+	int *array_left, *array_right;
+	/* counters */
+	int left, right, i = 0;
 
-	left_arr = &tmp[0];
-	right_arr = &tmp[right_size];
-
-	for (left_index = 0; left_index < left_size; left_index++)
-		left_arr[left_index] = arr[start + left_index];
-	for (right_index = 0; right_index < right_size; right_index++)
-		right_arr[right_index] = arr[mid + 1 + right_index];
-
-	left_index = 0, right_index = 0, i = start;
-
-	while (left_index < left_size && right_index < right_size)
+	array_left = &tmp[0];
+	array_right = &tmp[size_right];
+	for (left = 0; left < size_left; left++)
+		array_left[left] = arr[start + left];
+	for (right = 0; right < size_right; right++)
+		array_right[right] = arr[mid + 1 + right];
+	left = 0, right = 0, i = start;
+	/* merging tmp arrays into main array*/
+	while (left < size_left && right < size_right)
 	{
-		if (left_arr[left_index] <= right_arr[right_index])
-			arr[i] = left_arr[left_index], left_index++;
+		if (array_left[left] <= array_right[right])
+			arr[i] = array_left[left], left++;
 		else
-			arr[i] = right_arr[right_index], right_index++;
+			arr[i] = array_right[right], right++;
 		i++;
 	}
-
-	while (left_index < left_size)
-		arr[i] = left_arr[left_index], left_index++, i++;
-	while (right_index < right_size)
-		arr[i] = right_arr[right_index], right_index++, i++;
-
+	/* merging remaining left array into main array*/
+	while (left < size_left)
+		arr[i] = array_left[left], left++, i++;
+	/* merging remaining right array into main array*/
+	while (right < size_right)
+		arr[i] = array_right[right], right++, i++;
 	printf("Merging...\n");
 	printf("[left]: ");
-	print_array(left_arr, left_index);
+	print_array(array_left, left);
 	printf("[right]: ");
-	print_array(right_arr, right_index);
+	print_array(array_right, right);
 	printf("[Done]: ");
-	print_array(&arr[start], left_index + right_index);
+	print_array(&arr[start], left + right);
 }
-
 /**
- * mergesort - sorts an array of integers in ascending order using Merge sort
- * @array: array of integers to be sorted
- * @tmp: temporary array used in merge to optimize reducing system calls
- * @start: starting index of the array
- * @end: ending index of the array
- *
- * Description: This function sorts an array of integers in ascending order
- * using the Merge sort algorithm. It recursively divides the input array into
- * two halves, sorts them independently, and then merges the two sorted halves
- * to produce the final sorted array.
+ *mergesort - function that sorts an array of integers
+ *in ascending order using the Merge sort algorithm
+ *@array: array of integers
+ *@tmp: temp array used in merge, was created outside to
+ *optimize reducing the system calls
+ *@start: fisrt element position
+ *@end: last element position
+ *Return: void
  */
 void mergesort(int *array, int *tmp, int start, int end)
 {
@@ -100,16 +91,12 @@ void mergesort(int *array, int *tmp, int start, int end)
 		merge(array, tmp, start, mid, end);
 	}
 }
-
 /**
- * merge_sort - sorts an array of integers in ascending order using Merge sort
- * @array: array of integers to be sorted
- * @size: size of the array
- *
- * Description: This function sorts an array of integers in ascending order
- * using the Merge sort algorithm. It allocates a temporary array using calloc
- * to optimize reducing system calls and then calls the mergesort function to
- * perform the actual sorting. Finally, it frees the temporary array.
+ *merge_sort - function that sorts an array of integers
+ *in ascending order using the Merge sort algorithm
+ *@size: size of the list
+ *@array: array of integers
+ *Return: void
  */
 void merge_sort(int *array, size_t size)
 {
@@ -117,7 +104,6 @@ void merge_sort(int *array, size_t size)
 
 	if (!array || size < 2)
 		return;
-
 	tmp = _calloc(size, sizeof(int));
 	mergesort(array, tmp, 0, size - 1);
 	free(tmp);

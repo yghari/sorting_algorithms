@@ -1,72 +1,87 @@
 #include "sort.h"
+#include <stdio.h>
 
 /**
- * swap - swaps two integers
- * @a: first integer
- * @b: second integer
- */
+ * swap - utility function to swap to integers
+ * @a: integer a
+ * @b: integer b
+ **/
 void swap(int *a, int *b)
 {
-	int temp = *a;
+	int t = *a;
+
 	*a = *b;
-	*b = temp;
+	*b = t;
 }
 
 /**
- * max_heapify - recursively heapifies a subtree rooted at i, ensures that
- * the subtree rooted at i is a max heap
- * @arr: array to be sorted
- * @s: size of the array
- * @i: index of the subtree
- * @n: size of the subtree
+ * maxHeapify - The main function to heapify a Max Heap. The function
+ * assumes that everything under given root (element at index idx)
+ * is already heapified
+ * @array: array
+ * @size: size of the array for print
+ * @idx: index
+ * @n: size of the array to run
  */
-void max_heapify(int *arr, size_t s, int i, size_t n)
+void maxHeapify(int *array, size_t size, int idx, size_t n)
 {
-	int largest = i;
-	int left = 2 * i + 1;
-	int right = 2 * i + 2;
+	int largest = idx;		 /* Initialize largest as root*/
+	int left = 2 * idx + 1;	 /* left = (idx << 1) + 1*/
+	int right = 2 * idx + 2; /* right = (idx + 1) << 1*/
 
-	if (left < (int)n && arr[left] > arr[largest])
+	/* See if left child of root exists and is greater than root*/
+	if (left < (int)n && array[left] > array[largest])
 		largest = left;
 
-	if (right < (int)n && arr[right] > arr[largest])
+	/**
+	 * See if right child of root exists and is greater than
+     *the largest so far
+	 */
+	if (right < (int)n && array[right] > array[largest])
 		largest = right;
 
-	if (largest != i)
+	/* Change root, if needed*/
+	if (largest != idx)
 	{
-		swap(&arr[i], &arr[largest]);
-		print_array(arr, s);
-		max_heapify(arr, s, largest, n);
+		swap(&array[idx], &array[largest]);
+		print_array(array, size);
+		maxHeapify(array, size, largest, n);
 	}
 }
 
 /**
- * heap_sort - sorts an array of integers in ascending order using the
- * Heap sort algorithm
- * @array: array of integers to be sorted
+ * heap_sort -  The main function to sort an array of given size
+ * @array: array to sort
  * @size: size of the array
- *
- * Description: This function sorts an array of integers in ascending order
- * using the Heap sort algorithm. It first creates a max heap from the input
- * array, then repeatedly extracts the maximum element from the heap and places
- * it at the end of the array to produce the final sorted array.
- */
+ **/
 void heap_sort(int *array, size_t size)
 {
 	int i;
-
-	if (array == NULL || size < 2)
+	/**
+	 * Start from bottommost and rightmost internal mode and heapify all
+     * internal modes in bottom up way
+	 */
+	if (array == '\0' || size < 2)
 		return;
 
-	/* Build max heap */
 	for (i = (size - 2) / 2; i >= 0; --i)
-		max_heapify(array, size, i, size);
+		maxHeapify(array, size, i, size);
 
-	/* Extract max element and swap with last element, then re-heapify */
-	for (i = size - 1; i > 0; --i)
+	/**
+	* Repeat following steps while heap size is greater than 1.
+    * The last element in max heap will be the minimum element
+	*/
+	for (i = (size - 1); i > 0; --i)
 	{
+		/**
+		* The largest item in Heap is stored at the root. Replace
+		*it with the last item of the heap followed by reducing the
+		*size of heap by 1.
+		*/
 		swap(&array[0], &array[i]);
 		print_array(array, size);
-		max_heapify(array, size, 0, i);
+
+		/* Finally, heapify the root of tree.*/
+		maxHeapify(array, size, 0, i);
 	}
 }
